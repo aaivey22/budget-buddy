@@ -34,10 +34,10 @@ tr:nth-child(even) {
 
 .total {
   font-size: 150%;
-  text-decoration: underline;
 }
 
 .form {
+  /* margin: auto; */
   margin-top: 25px;
   width: 100%;
 }
@@ -46,6 +46,7 @@ tr:nth-child(even) {
   text-align: left;
   max-height: 300px;
   overflow: auto;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 }
+

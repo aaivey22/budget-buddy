@@ -3,8 +3,8 @@ const FILES_TO_CACHE = [
   "/index.html",
   "/index.js",
   "/style.css",
-  "/icons/icon-96x96.png",
-  "/icons/icon-72x72.png"
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png"
 ];
 
 
@@ -13,7 +13,7 @@ const DATA_CACHE_NAME = "data-cache-v1";
 
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open(PRECACHE)
+    caches.open(CACHE_NAME)
       .then(cache => cache.addAll(FILES_TO_CACHE))
       .then(self.skipWaiting())
   );
@@ -21,8 +21,8 @@ self.addEventListener("install", e => {
 
 // The activate handler takes care of cleaning up old caches.
 // activate
-self.addEventListener("activate", function(evt) {
-  evt.waitUntil(
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
     caches.keys().then(keyList => {
       return Promise.all(
         keyList.map(key => {
@@ -38,7 +38,7 @@ self.addEventListener("activate", function(evt) {
   self.clients.claim();
 });
 
-// fetch
+// fetched data is stored in cache
 self.addEventListener("fetch", (e) => {
   if (e.req.url.includes("/api/")) {
     e.respondWith(
@@ -63,10 +63,9 @@ self.addEventListener("fetch", (e) => {
   }
 
   e.respondWith(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.match(e.req).then(res => {
-        return res || fetch(e.req);
-      });
+    caches.match(e.req).then(function (res) {
+      return res || fetch(e.req);
     })
   );
+
 });
