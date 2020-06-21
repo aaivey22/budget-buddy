@@ -1,8 +1,10 @@
 const FILES_TO_CACHE = [
   "/",
+  "/db.js",
   "/index.html",
   "/index.js",
-  "/style.css",
+  "/styles.css",
+  "/manifest.webmanifest",
   "/icons/icon-192x192.png",
   "/icons/icon-512x512.png"
 ];
@@ -40,21 +42,21 @@ self.addEventListener("activate", (e) => {
 
 // fetched data is stored in cache
 self.addEventListener("fetch", (e) => {
-  if (e.req.url.includes("/api/")) {
+  if (e.request.url.includes("/api/")) {
     e.respondWith(
       caches.open(DATA_CACHE_NAME).then(cache => {
-        return fetch(e.req)
+        return fetch(e.request)
           .then(res => {
             // If the response was good, clone it and store it in the cache.
             if (res.status === 200) {
-              cache.put(e.req.url, res.clone());
+              cache.put(e.request.url, res.clone());
             }
 
             return res;
           })
           .catch(err => {
             // Network request failed, try to get it from the cache.
-            return cache.match(e.req);
+            return cache.match(e.request);
           });
       }).catch(err => console.log(err))
     );
@@ -63,8 +65,8 @@ self.addEventListener("fetch", (e) => {
   }
 
   e.respondWith(
-    caches.match(e.req).then(function (res) {
-      return res || fetch(e.req);
+    caches.match(e.request).then(function (res) {
+      return res || fetch(e.request);
     })
   );
 
